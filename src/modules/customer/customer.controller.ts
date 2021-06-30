@@ -7,18 +7,18 @@ export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
   @Post()
-  create(@Body() createCustomerDto: CreateCustomerDto) {
-    return this.customerService.createAsync(createCustomerDto);
+  async create(@Body() createCustomerDto: CreateCustomerDto) {
+    return await this.customerService.createAsync(createCustomerDto);
   }
 
   @Get()
-  findAll() {
-    return this.customerService.findAllAsync();
+  async findAll() {
+    return await this.customerService.findAllAsync();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.customerService.findOneAsync(id);
+  async findOne(@Param('id') id: string) {
+    return await this.customerService.findOneAsync(id);
   }
 
 }

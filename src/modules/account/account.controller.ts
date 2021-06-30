@@ -13,22 +13,22 @@ export class AccountController {
   }
 
   @Get('all/:customerId')
-  findAll(@Param('customerId') customerId: string) {
-    return this.accountService.findCustomerAccountsAsync(customerId);
+  async findAll(@Param('customerId') customerId: string) {
+    return await this.accountService.findCustomerAccountsAsync(customerId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.accountService.findOneAsync(id);
+  async findOne(@Param('id') id: string) {
+    return await this.accountService.findOneAsync(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {
-    return this.accountService.updateAsync(id, updateAccountDto);
+  async update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {
+    return await this.accountService.updateAsync(id, updateAccountDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.accountService.removeAsync(id);
+  async remove(@Param('id') id: string) {
+    return await this.accountService.removeAsync(id);
   }
 }
