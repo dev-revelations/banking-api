@@ -14,8 +14,10 @@ export default class AccountRepository {
             .toPromise();
     }
 
-    async findAllAsync(): Promise<Array<AccountEntity>> {
-        return await this.accountDbService.getAllAsync().toPromise();
+    async findAllAsync(customerId: string): Promise<Array<AccountEntity>> {
+        return await this.accountDbService
+            .queryAsync(record => record.customerId === customerId)
+            .toPromise();
     }
 
     async findOneAsync(id: string): Promise<AccountEntity> {

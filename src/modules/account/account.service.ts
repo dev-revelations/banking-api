@@ -24,9 +24,9 @@ export class AccountService {
     }
   }
 
-  async findAllAsync(): Promise<Array<AccountEntity>> {
+  async findCustomerAccountsAsync(customerId:string): Promise<Array<AccountEntity>> {
     try {
-      const accounts = await this.accountRepo.findAllAsync();
+      const accounts = await this.accountRepo.findAllAsync(customerId);
       if (!accounts || accounts.length === 0) {
         throw new HttpException('There are no accounts', HttpStatus.NO_CONTENT);
       }

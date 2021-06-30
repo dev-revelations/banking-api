@@ -12,9 +12,9 @@ export class AccountController {
     return await this.accountService.createAsync(createAccountDto);
   }
 
-  @Get()
-  findAll() {
-    return this.accountService.findAllAsync();
+  @Get('all/:customerId')
+  findAll(@Param('customerId') customerId: string) {
+    return this.accountService.findCustomerAccountsAsync(customerId);
   }
 
   @Get(':id')
