@@ -7,7 +7,7 @@ import TransactionRepository from './repositories/transaction.repository';
 
 @Module({
   imports: [
-    InMemoryDBModule.forFeature('customer')
+    InMemoryDBModule.forFeature('account')
   ],
   controllers: [AccountController],
   providers: [AccountService, AccountRepository, TransactionRepository],
