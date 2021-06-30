@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestj
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { AccountEntity } from './entities/account.entity';
+import { TransactionEntity } from './entities/transaction.entity';
 import AccountRepository from './repositories/account.repository';
 import TransactionRepository from './repositories/transaction.repository';
 
@@ -24,7 +25,7 @@ export class AccountService {
     }
   }
 
-  async findCustomerAccountsAsync(customerId:string): Promise<Array<AccountEntity>> {
+  async findCustomerAccountsAsync(customerId: string): Promise<Array<AccountEntity>> {
     try {
       const accounts = await this.accountRepo.findAllAsync(customerId);
       if (!accounts || accounts.length === 0) {
@@ -69,4 +70,31 @@ export class AccountService {
       throw new HttpException(err, HttpStatus.BAD_REQUEST);
     }
   }
+
+  async getBalanceAsync(accountId: string): Promise<number> {
+    try {
+      const zeroBalance = 0;
+      const transactions = await this.transactionRepo.findAllAsync(accountId);
+      if (!transactions || transactions.length === 0) {
+        return zeroBalance;
+      }
+      const balance = transactions
+        .map(te => te.amount)
+        .reduce((acc, current) => acc + current);
+
+      this.validateBalance(balance);
+
+      return balance;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+
+  private validateBalance(balance: number) {
+    if (!balance || balance < 0) {
+      throw new HttpException('Processing the account balance has failed', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+  }
+
 }
