@@ -4,7 +4,7 @@ import * as helmet from 'helmet';
 import * as csurf from 'csurf';
 import * as session from 'express-session';
 import { ConfigService } from '@nestjs/config';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { CONFIG_KEY_SESSION_SECRET, GLOBAL_PREFIX, PORT_ALTERNATIVE } from './core/constants/consts';
 
 async function bootstrap() {
@@ -21,6 +21,17 @@ async function bootstrap() {
     resave: true
   }));
   app.use(csurf());
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
 
   app.setGlobalPrefix(GLOBAL_PREFIX);
 
