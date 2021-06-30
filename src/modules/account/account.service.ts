@@ -140,6 +140,18 @@ export class AccountService {
     }
   }
 
+  async findAllTransactions(accountId: string): Promise<TransactionEntity[]> {
+    try {
+      const transactions = await this.transactionRepo.findAllAsync(accountId);
+      if (!transactions) {
+        return [];
+      }
+      return transactions;
+    } catch (err) {
+      this.throwBadRequest(err);
+    }
+  }
+
   private readonly throwBadRequest =
     (message) => { throw new HttpException(message, HttpStatus.BAD_REQUEST) };
 
