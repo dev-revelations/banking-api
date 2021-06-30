@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { TopUpDto } from './dto/top-up.dto';
+import { TransferDto } from './dto/transfer.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { AccountEntity } from './entities/account.entity';
 import { TransactionEntity } from './entities/transaction.entity';
@@ -115,6 +116,30 @@ export class AccountService {
     }
   }
 
+  async transferMoney(transferDto: TransferDto) {
+    try {
+      const { amount, fromAccountId, toAccountId } = transferDto;
+      this.validateTransfer(amount);
+      const transferKey = `${fromAccountId}>>>${toAccountId}`;
+      const fromTopUpDto: TopUpDto = {
+        accountId: fromAccountId,
+        amount: -amount,
+        transferKey
+      };
+      const toTopUpDto: TopUpDto = {
+        accountId: toAccountId,
+        amount: amount,
+        transferKey
+      };
+
+      await this.topUpAsync(fromTopUpDto);
+      await this.topUpAsync(toTopUpDto);
+
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+    }
+  }
+
 
   private validateBalance(balance: number) {
     if (!balance || balance < 0) {
@@ -134,5 +159,11 @@ export class AccountService {
       throwHttpException('Insufficient account balance');
     }
 
+  }
+
+  private validateTransfer(amount: number) {
+    if (amount <= 0) {
+      throw new HttpException('Transfer amount value is not valid', HttpStatus.BAD_REQUEST);
+    }
   }
 }
