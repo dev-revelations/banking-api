@@ -5,14 +5,17 @@ import * as csurf from 'csurf';
 import * as session from 'express-session';
 import { ConfigService } from '@nestjs/config';
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { CONFIG_KEY_SESSION_SECRET, GLOBAL_PREFIX, PORT_ALTERNATIVE } from './core/constants/consts';
+import { CONFIG_KEY_ENVIRONMENT, CONFIG_KEY_SESSION_SECRET, ENV_DEVELOPMENT, GLOBAL_PREFIX, PORT_ALTERNATIVE } from './core/constants/consts';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
   const port = process.env.PORT || PORT_ALTERNATIVE;
 
-  app.enableCors();
+  if (config.get(CONFIG_KEY_ENVIRONMENT) !== ENV_DEVELOPMENT) {
+    app.enableCors();
+    app.use(csurf());
+  }
 
   app.use(helmet());
   app.use(session({
@@ -20,7 +23,7 @@ async function bootstrap() {
     saveUninitialized: true,
     resave: true
   }));
-  app.use(csurf());
+
 
   app.useGlobalPipes(
     new ValidationPipe({
