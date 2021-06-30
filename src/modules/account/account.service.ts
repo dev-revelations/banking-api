@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
+import { TopUpDto } from './dto/top-up.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { AccountEntity } from './entities/account.entity';
 import { TransactionEntity } from './entities/transaction.entity';
@@ -71,6 +72,30 @@ export class AccountService {
     }
   }
 
+  async topUpAsync(topUpDto: TopUpDto): Promise<TransactionEntity> {
+    try {
+      const { accountId, amount, transferKey } = topUpDto;
+      const currentBalance = await this.getBalanceAsync(accountId);
+
+      this.validateTopUp(amount, currentBalance);
+
+      const balance = currentBalance + amount;
+
+      const transaction: TransactionEntity = {
+        id: undefined,
+        createdAt: new Date(),
+        accountId,
+        amount,
+        balance,
+        transferKey
+      }
+
+      return await this.transactionRepo.createAsync(transaction);
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+    }
+  }
+
   async getBalanceAsync(accountId: string): Promise<number> {
     try {
       const zeroBalance = 0;
@@ -97,4 +122,17 @@ export class AccountService {
     }
   }
 
+  private validateTopUp(amount: number, currentBalance: number) {
+    const throwHttpException =
+      (message) => { throw new HttpException(message, HttpStatus.BAD_REQUEST) };
+
+    if (amount === 0) {
+      throwHttpException('Transactions with zero amount is not allowed');
+    } else if (currentBalance <= 0 && amount < 0) {
+      throwHttpException('Insufficient account balance');
+    } else if ((currentBalance + amount) < 0) {
+      throwHttpException('Insufficient account balance');
+    }
+
+  }
 }
