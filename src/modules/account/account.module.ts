@@ -10,6 +10,7 @@ import TransactionRepository from './repositories/transaction.repository';
     InMemoryDBModule.forFeature('customer')
   ],
   controllers: [AccountController],
-  providers: [AccountService, AccountRepository, TransactionRepository]
+  providers: [AccountService, AccountRepository, TransactionRepository],
+  exports: [AccountService, AccountRepository, TransactionRepository]
 })
 export class AccountModule { }

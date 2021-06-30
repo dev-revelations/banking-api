@@ -9,6 +9,7 @@ import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
     InMemoryDBModule.forFeature('customer')
   ],
   controllers: [CustomerController],
-  providers: [CustomerService, CustomerRepository]
+  providers: [CustomerService, CustomerRepository],
+  exports: [CustomerService, CustomerRepository]
 })
 export class CustomerModule { }
