@@ -5,14 +5,15 @@ import * as csurf from 'csurf';
 import * as session from 'express-session';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
-import { CONFIG_KEY_SESSION_SECRET, PORT_ALTERNATIVE } from './core/constants/consts';
+import { CONFIG_KEY_SESSION_SECRET, GLOBAL_PREFIX, PORT_ALTERNATIVE } from './core/constants/consts';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
   const config = app.get(ConfigService);
+  const port = process.env.PORT || PORT_ALTERNATIVE;
 
   app.enableCors();
+
   app.use(helmet());
   app.use(session({
     secret: config.get(CONFIG_KEY_SESSION_SECRET),
@@ -21,11 +22,11 @@ async function bootstrap() {
   }));
   app.use(csurf());
 
+  app.setGlobalPrefix(GLOBAL_PREFIX);
 
-  const port = process.env.PORT || PORT_ALTERNATIVE;
 
   await app.listen(port, () => {
-    Logger.log(`Listening at http://localhost:${port}`);
+    Logger.log(`Listening at http://localhost:${port}/${GLOBAL_PREFIX}`);
   });
 }
 bootstrap();
