@@ -1,26 +1,47 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
-import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { CustomerEntity } from './entities/customer.entity';
+import CustomerRepository from './repositories/customer.repository';
 
 @Injectable()
 export class CustomerService {
-  create(createCustomerDto: CreateCustomerDto) {
-    return 'This action adds a new customer';
+
+  constructor(private readonly customerRepository: CustomerRepository) { }
+
+  async createAsync(createCustomerDto: CreateCustomerDto): Promise<CustomerEntity> {
+    try {
+      const customer: CustomerEntity = {
+        id: undefined,
+        name: createCustomerDto.name
+      };
+      return await this.customerRepository.createAsync(customer);
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+    }
   }
 
-  findAll() {
-    return `This action returns all customer`;
+  async findAllAsync(): Promise<CustomerEntity[]> {
+    try {
+      const customers = await this.customerRepository.findAllAsync();
+      if (!customers || customers.length === 0) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
+      return customers;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} customer`;
-  }
+  async findOneAsync(id: string): Promise<CustomerEntity> {
+    try {
+      const customer = await this.customerRepository.findOneAsync(id);
+      if (!customer) {
+        throw new NotFoundException(`Customer #${id} not found`);
+      }
 
-  update(id: number, updateCustomerDto: UpdateCustomerDto) {
-    return `This action updates a #${id} customer`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} customer`;
+      return customer;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+    }
   }
 }
