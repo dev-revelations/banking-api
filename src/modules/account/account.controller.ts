@@ -8,27 +8,27 @@ export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
   @Post()
-  create(@Body() createAccountDto: CreateAccountDto) {
-    return this.accountService.create(createAccountDto);
+  async create(@Body() createAccountDto: CreateAccountDto) {
+    return await this.accountService.createAsync(createAccountDto);
   }
 
   @Get()
   findAll() {
-    return this.accountService.findAll();
+    return this.accountService.findAllAsync();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.accountService.findOne(+id);
+    return this.accountService.findOneAsync(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {
-    return this.accountService.update(+id, updateAccountDto);
+    return this.accountService.updateAsync(id, updateAccountDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.accountService.remove(+id);
+    return this.accountService.removeAsync(id);
   }
 }
