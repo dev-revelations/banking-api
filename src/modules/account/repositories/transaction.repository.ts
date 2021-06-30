@@ -13,8 +13,10 @@ export default class TransactionRepository {
             .toPromise();
     }
 
-    async findAllAsync(): Promise<Array<TransactionEntity>> {
-        return await this.transactionDbService.getAllAsync().toPromise();
+    async findAllAsync(accountId: string): Promise<Array<TransactionEntity>> {
+        return await this.transactionDbService
+            .queryAsync(record => record.accountId === accountId)
+            .toPromise();
     }
 
     async findOneAsync(id: string): Promise<TransactionEntity> {
