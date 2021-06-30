@@ -56,6 +56,7 @@ export class AccountService {
         name,
         customerId
       };
+      await this.accountRepo.updateAsync(account);
     } catch (err) {
       throw new HttpException(err, HttpStatus.BAD_REQUEST);
     }
