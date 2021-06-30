@@ -23,7 +23,7 @@ export class AccountService {
       };
       return await this.accountRepo.createAsync(account);
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      this.throwBadRequest(err);
     }
   }
 
@@ -35,7 +35,7 @@ export class AccountService {
       }
       return accounts;
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      this.throwBadRequest(err);
     }
   }
 
@@ -47,7 +47,7 @@ export class AccountService {
       }
       return account;
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      this.throwBadRequest(err);
     }
   }
 
@@ -61,7 +61,7 @@ export class AccountService {
       };
       await this.accountRepo.updateAsync(account);
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      this.throwBadRequest(err);
     }
   }
 
@@ -69,7 +69,7 @@ export class AccountService {
     try {
       await this.accountRepo.removeAsync(id);
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      this.throwBadRequest(err);
     }
   }
 
@@ -93,7 +93,7 @@ export class AccountService {
 
       return await this.transactionRepo.createAsync(transaction);
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      this.throwBadRequest(err);
     }
   }
 
@@ -112,7 +112,7 @@ export class AccountService {
 
       return balance;
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      this.throwBadRequest(err);
     }
   }
 
@@ -136,10 +136,12 @@ export class AccountService {
       await this.topUpAsync(toTopUpDto);
 
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      this.throwBadRequest(err);
     }
   }
 
+  private readonly throwBadRequest =
+    (message) => { throw new HttpException(message, HttpStatus.BAD_REQUEST) };
 
   private validateBalance(balance: number) {
     if (!balance || balance < 0) {
@@ -148,22 +150,20 @@ export class AccountService {
   }
 
   private validateTopUp(amount: number, currentBalance: number) {
-    const throwHttpException =
-      (message) => { throw new HttpException(message, HttpStatus.BAD_REQUEST) };
 
     if (amount === 0) {
-      throwHttpException('Transactions with zero amount is not allowed');
+      this.throwBadRequest('Transactions with zero amount is not allowed');
     } else if (currentBalance <= 0 && amount < 0) {
-      throwHttpException('Insufficient account balance');
+      this.throwBadRequest('Insufficient account balance');
     } else if ((currentBalance + amount) < 0) {
-      throwHttpException('Insufficient account balance');
+      this.throwBadRequest('Insufficient account balance');
     }
 
   }
 
   private validateTransfer(amount: number) {
     if (amount <= 0) {
-      throw new HttpException('Transfer amount value is not valid', HttpStatus.BAD_REQUEST);
+      this.throwBadRequest('Transfer amount value is not valid');
     }
   }
 }
