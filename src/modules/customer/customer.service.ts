@@ -6,6 +6,9 @@ import CustomerRepository from './repositories/customer.repository';
 @Injectable()
 export class CustomerService {
 
+  private readonly HTTP_MESSAGE_NO_CONTENT = 'No Content';
+  private readonly HTTP_MESSAGE_CUSTOMER_NOT_FOUND = (id:string) => `Customer #${id} not found`;
+
   constructor(private readonly customerRepository: CustomerRepository) { }
 
   async createAsync(createCustomerDto: CreateCustomerDto): Promise<CustomerEntity> {
@@ -24,7 +27,7 @@ export class CustomerService {
     try {
       const customers = await this.customerRepository.findAllAsync();
       if (!customers || customers.length === 0) {
-        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+        throw new HttpException(this.HTTP_MESSAGE_NO_CONTENT, HttpStatus.NO_CONTENT);
       }
       return customers;
     } catch (err) {
@@ -36,7 +39,7 @@ export class CustomerService {
     try {
       const customer = await this.customerRepository.findOneAsync(id);
       if (!customer) {
-        throw new NotFoundException(`Customer #${id} not found`);
+        throw new NotFoundException(this.HTTP_MESSAGE_CUSTOMER_NOT_FOUND(id));
       }
 
       return customer;
