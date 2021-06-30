@@ -1,5 +1,5 @@
 import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
-import { Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CoreModule } from './core/core.module';
@@ -11,7 +11,8 @@ import { AccountModule } from './modules/account/account.module';
     CoreModule,
     CustomerModule,
     InMemoryDBModule.forRoot({}),
-    AccountModule
+    AccountModule,
+    HttpModule
   ],
   controllers: [AppController],
   providers: [AppService],
