@@ -12,13 +12,13 @@ export default class CustomerRepository {
             .toPromise();
     }
 
-    async getAsync(id: string): Promise<CustomerEntity> {
+    async findOneAsync(id: string): Promise<CustomerEntity> {
         return await this.customerDbService
             .getAsync(id)
             .toPromise();
     }
 
-    async getAllAsync(): Promise<Array<CustomerEntity>> {
+    async findAllAsync(): Promise<Array<CustomerEntity>> {
         return await this.customerDbService
             .getAllAsync()
             .toPromise();
