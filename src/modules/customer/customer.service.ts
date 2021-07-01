@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { STRINGS } from 'src/core/constants/consts';
+import { STRINGS } from '../../core/constants/consts';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { CustomerEntity } from './entities/customer.entity';
 import CustomerRepository from './repositories/customer.repository';

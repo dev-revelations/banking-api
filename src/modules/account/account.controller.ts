@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ROUTES } from 'src/core/constants/consts';
+import { ROUTES } from '../../core/constants/consts';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { TopUpDto } from './dto/top-up.dto';

@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { STRINGS } from 'src/core/constants/consts';
+import { STRINGS } from '../../core/constants/consts';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { TopUpDto } from './dto/top-up.dto';
 import { TransferDto } from './dto/transfer.dto';
