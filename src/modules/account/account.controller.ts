@@ -1,11 +1,12 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { ROUTES } from 'src/core/constants/consts';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { TopUpDto } from './dto/top-up.dto';
 import { TransferDto } from './dto/transfer.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 
-@Controller('account')
+@Controller(ROUTES.ACCOUNT_ROOT)
 export class AccountController {
   constructor(private readonly accountService: AccountService) { }
 
@@ -14,42 +15,42 @@ export class AccountController {
     return await this.accountService.createAsync(createAccountDto);
   }
 
-  @Get('all/:customerId')
-  async findAll(@Param('customerId') customerId: string) {
+  @Get(ROUTES.ACCOUNT_GET_ALL)
+  async findAll(@Param(ROUTES.PARAM_CUSTOMER_ID) customerId: string) {
     return await this.accountService.findCustomerAccountsAsync(customerId);
   }
 
-  @Get('detail/:id')
-  async findOne(@Param('id') id: string) {
+  @Get(ROUTES.ACCOUNT_GET_DETAIL)
+  async findOne(@Param(ROUTES.PARAM_ID) id: string) {
     return await this.accountService.findOneAsync(id);
   }
 
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {
+  @Patch(ROUTES.ACCOUNT_PATCH)
+  async update(@Param(ROUTES.PARAM_ID) id: string, @Body() updateAccountDto: UpdateAccountDto) {
     return await this.accountService.updateAsync(id, updateAccountDto);
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
+  @Delete(ROUTES.ACCOUNT_DELETE)
+  async remove(@Param(ROUTES.PARAM_ID) id: string) {
     return await this.accountService.removeAsync(id);
   }
 
-  @Get('/transactions/:id')
-  async getTransactions(@Param('id') id: string) {
+  @Get(ROUTES.ACCOUNT_GET_TRANSACTIONS)
+  async getTransactions(@Param(ROUTES.PARAM_ID) id: string) {
     return await this.accountService.findAllTransactions(id);
   }
 
-  @Get('/balance/:id')
-  async getAccountBalance(@Param('id') id: string) {
+  @Get(ROUTES.ACCOUNT_GET_BALANCE)
+  async getAccountBalance(@Param(ROUTES.PARAM_ID) id: string) {
     return await this.accountService.getBalanceAsync(id);
   }
 
-  @Post('/topup')
+  @Post(ROUTES.ACCOUNT_POST_TOP_UP)
   async topUpMoney(@Body() topUpDto: TopUpDto) {
     return await this.accountService.topUpAsync(topUpDto);
   }
 
-  @Post('/transfer')
+  @Post(ROUTES.ACCOUNT_POST_TRANSFER)
   async transferMoney(@Body() transferDto: TransferDto) {
     return await this.accountService.transferMoney(transferDto);
   }
