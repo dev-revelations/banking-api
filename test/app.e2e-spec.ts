@@ -15,10 +15,20 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
+  it('/ (GET)', async () => {
+    const response = await request(app.getHttpServer())
       .get('/')
-      .expect(200)
-      .expect('Hello World!');
+      .expect(404);
+
+    expect(response.text).toContain('Not Found');
+    return response;
   });
+
+  it('/seed (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/seed')
+      .expect(200)
+      .expect('ready');
+  });
+
 });
