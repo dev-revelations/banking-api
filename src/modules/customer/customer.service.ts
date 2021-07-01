@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { handleHttpException } from '../../core/helpers';
 import { STRINGS } from '../../core/constants/consts';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { CustomerEntity } from './entities/customer.entity';
@@ -17,7 +18,7 @@ export class CustomerService {
       };
       return await this.customerRepository.createAsync(customer);
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      handleHttpException(err);
     }
   }
 
@@ -29,7 +30,7 @@ export class CustomerService {
       }
       return customers;
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      handleHttpException(err);
     }
   }
 
@@ -42,7 +43,7 @@ export class CustomerService {
 
       return customer;
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      handleHttpException(err);
     }
   }
 }
