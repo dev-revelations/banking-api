@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { handleHttpException } from '../../core/helpers';
 import { STRINGS } from '../../core/constants/consts';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { TopUpDto } from './dto/top-up.dto';
@@ -24,7 +25,7 @@ export class AccountService {
       };
       return await this.accountRepo.createAsync(account);
     } catch (err) {
-      this.throwBadRequest(err);
+      this.handleError(err);
     }
   }
 
@@ -36,7 +37,7 @@ export class AccountService {
       }
       return accounts;
     } catch (err) {
-      this.throwBadRequest(err);
+      this.handleError(err);
     }
   }
 
@@ -48,7 +49,7 @@ export class AccountService {
       }
       return account;
     } catch (err) {
-      this.throwBadRequest(err);
+      this.handleError(err);
     }
   }
 
@@ -62,7 +63,7 @@ export class AccountService {
       };
       await this.accountRepo.updateAsync(account);
     } catch (err) {
-      this.throwBadRequest(err);
+      this.handleError(err);
     }
   }
 
@@ -70,7 +71,7 @@ export class AccountService {
     try {
       await this.accountRepo.removeAsync(id);
     } catch (err) {
-      this.throwBadRequest(err);
+      this.handleError(err);
     }
   }
 
@@ -94,7 +95,7 @@ export class AccountService {
 
       return await this.transactionRepo.createAsync(transaction);
     } catch (err) {
-      this.throwBadRequest(err);
+      this.handleError(err);
     }
   }
 
@@ -113,7 +114,7 @@ export class AccountService {
 
       return balance;
     } catch (err) {
-      this.throwBadRequest(err);
+      this.handleError(err);
     }
   }
 
@@ -137,7 +138,7 @@ export class AccountService {
       await this.topUpAsync(toTopUpDto);
 
     } catch (err) {
-      this.throwBadRequest(err);
+      this.handleError(err);
     }
   }
 
@@ -149,12 +150,12 @@ export class AccountService {
       }
       return transactions;
     } catch (err) {
-      this.throwBadRequest(err);
+      this.handleError(err);
     }
   }
 
-  private readonly throwBadRequest =
-    (message) => { throw new HttpException(message, HttpStatus.BAD_REQUEST) };
+  private readonly handleError =
+    (err) => { handleHttpException(err); };
 
   private validateBalance(balance: number) {
     if (!balance || balance < 0) {
@@ -165,18 +166,18 @@ export class AccountService {
   private validateTopUp(amount: number, currentBalance: number) {
 
     if (amount === 0) {
-      this.throwBadRequest(STRINGS.ERR_ACCOUNT_SERVICE_ZERO_AMOUNT);
+      this.handleError(STRINGS.ERR_ACCOUNT_SERVICE_ZERO_AMOUNT);
     } else if (currentBalance <= 0 && amount < 0) {
-      this.throwBadRequest(STRINGS.ERR_ACCOUNT_SERVICE_INSUFFICIENT_BALANCE);
+      this.handleError(STRINGS.ERR_ACCOUNT_SERVICE_INSUFFICIENT_BALANCE);
     } else if ((currentBalance + amount) < 0) {
-      this.throwBadRequest(STRINGS.ERR_ACCOUNT_SERVICE_INSUFFICIENT_BALANCE);
+      this.handleError(STRINGS.ERR_ACCOUNT_SERVICE_INSUFFICIENT_BALANCE);
     }
 
   }
 
   private validateTransfer(amount: number) {
     if (amount <= 0) {
-      this.throwBadRequest(STRINGS.ERR_ACCOUNT_SERVICE_AMOUNT_NOT_VALID);
+      this.handleError(STRINGS.ERR_ACCOUNT_SERVICE_AMOUNT_NOT_VALID);
     }
   }
 }
