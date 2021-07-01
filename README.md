@@ -22,10 +22,103 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+## Technical Challenge Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+The purpose of the exercise is to create an REST API for the customer of the bank that will be used to make money transfers between accounts. You will need to design and implement it
 
+### Use Cases
+
+- Create money transfers from one account to another
+
+- View transactions after transfer completed under each account
+
+### Tech Requirements
+
+- You can use vanilla js or typescript
+
+- No need to perform auth checks to keep things simple
+
+- You can use frameworks/libraries if you like, keep at minimum as possible
+
+- Do not use a DB Service like MongoDB or MySQL, instead use in-memory storage or build your own service. Also avoid to use a ORM module
+
+- Use GIT to track your changes, please send us a zip file with ./git included*
+
+- Include in the code automation testing to check that the API works as expected.
+
+- Errors should be properly handled 
+
+- It’s desirable to implement with DDD/Clean architecture is preferred
+
+## In-Memory DB Schema
+
+### Customer
+    - id
+    - name
+
+### Account
+    - id
+    - customerId
+    - name
+
+### Transaction
+    - id
+    - accountId
+    - amount
+    - balance
+    - createdAt
+    - transferKey (account-A-id + account-B-id)
+
+## API
+
+### Global Prefix
+    api/v1
+### Customer
+Create Customer:
+
+    POST: {prefix}/customer 
+
+Get All Customers:
+
+    GET: {prefix}/customer
+  
+Get One Customer:
+
+    GET: {prefix}/customer/:id
+
+### Account
+Create Account:
+
+    POST: {prefix}/account
+    
+ Get All Accounts for a customer:
+
+    GET: {prefix}/account/:customerId
+  
+ Get One Account:
+
+    GET: {prefix}/account/detail/:id
+    
+ Update Account:
+
+    PATCH: {prefix}/account/:id
+    
+ Delete Account:
+
+    DELETE: {prefix}/account/:id
+    
+ Get Account Balance:
+ 
+    GET: {prefix}/account/balance/:id
+ 
+ Top-up Money:    
+ 
+    POST: {prefix}/account/topup
+    
+ Transfer Money: 
+
+    POST: {prefix}/account/transfer
+    
 ## Installation
 
 ```bash
@@ -47,6 +140,8 @@ $ npm run start:prod
 
 ## Test
 
+**Important: Please note that only the e2e tests are implemented for this project**
+
 ```bash
 # unit tests
 $ npm run test
@@ -58,16 +153,7 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+behzad.ghaffarnejad@gmail.com
 
-## License
-
-Nest is [MIT licensed](LICENSE).
