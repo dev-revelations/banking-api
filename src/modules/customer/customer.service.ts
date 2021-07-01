@@ -1,13 +1,11 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { STRINGS } from 'src/core/constants/consts';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { CustomerEntity } from './entities/customer.entity';
 import CustomerRepository from './repositories/customer.repository';
 
 @Injectable()
 export class CustomerService {
-
-  private readonly HTTP_MESSAGE_NO_CONTENT = 'No Content';
-  private readonly HTTP_MESSAGE_CUSTOMER_NOT_FOUND = (id:string) => `Customer #${id} not found`;
 
   constructor(private readonly customerRepository: CustomerRepository) { }
 
@@ -27,7 +25,7 @@ export class CustomerService {
     try {
       const customers = await this.customerRepository.findAllAsync();
       if (!customers || customers.length === 0) {
-        throw new HttpException(this.HTTP_MESSAGE_NO_CONTENT, HttpStatus.NO_CONTENT);
+        throw new HttpException(STRINGS.ERR_CUSTOMER_SERVICE_NO_CONTENT, HttpStatus.NO_CONTENT);
       }
       return customers;
     } catch (err) {
@@ -39,7 +37,7 @@ export class CustomerService {
     try {
       const customer = await this.customerRepository.findOneAsync(id);
       if (!customer) {
-        throw new NotFoundException(this.HTTP_MESSAGE_CUSTOMER_NOT_FOUND(id));
+        throw new NotFoundException(STRINGS.ERR_CUSTOMER_SERVICE_NOT_FOUND(id));
       }
 
       return customer;

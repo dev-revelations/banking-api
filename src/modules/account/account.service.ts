@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { STRINGS } from 'src/core/constants/consts';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { TopUpDto } from './dto/top-up.dto';
 import { TransferDto } from './dto/transfer.dto';
@@ -31,7 +32,7 @@ export class AccountService {
     try {
       const accounts = await this.accountRepo.findAllAsync(customerId);
       if (!accounts || accounts.length === 0) {
-        throw new HttpException('There are no accounts', HttpStatus.NO_CONTENT);
+        throw new HttpException(STRINGS.ERR_ACCOUNT_SERVICE_NO_ACCOUNTS, HttpStatus.NO_CONTENT);
       }
       return accounts;
     } catch (err) {
@@ -43,7 +44,7 @@ export class AccountService {
     try {
       const account = await this.accountRepo.findOneAsync(id);
       if (!account) {
-        throw new NotFoundException(`Account not found`);
+        throw new NotFoundException(STRINGS.ERR_ACCOUNT_SERVICE_NOT_FOUND);
       }
       return account;
     } catch (err) {
@@ -157,25 +158,25 @@ export class AccountService {
 
   private validateBalance(balance: number) {
     if (!balance || balance < 0) {
-      throw new HttpException('Processing the account balance has failed', HttpStatus.UNPROCESSABLE_ENTITY);
+      throw new HttpException(STRINGS.ERR_ACCOUNT_SERVICE_GET_BALANCE_FAILED, HttpStatus.UNPROCESSABLE_ENTITY);
     }
   }
 
   private validateTopUp(amount: number, currentBalance: number) {
 
     if (amount === 0) {
-      this.throwBadRequest('Transactions with zero amount is not allowed');
+      this.throwBadRequest(STRINGS.ERR_ACCOUNT_SERVICE_ZERO_AMOUNT);
     } else if (currentBalance <= 0 && amount < 0) {
-      this.throwBadRequest('Insufficient account balance');
+      this.throwBadRequest(STRINGS.ERR_ACCOUNT_SERVICE_INSUFFICIENT_BALANCE);
     } else if ((currentBalance + amount) < 0) {
-      this.throwBadRequest('Insufficient account balance');
+      this.throwBadRequest(STRINGS.ERR_ACCOUNT_SERVICE_INSUFFICIENT_BALANCE);
     }
 
   }
 
   private validateTransfer(amount: number) {
     if (amount <= 0) {
-      this.throwBadRequest('Transfer amount value is not valid');
+      this.throwBadRequest(STRINGS.ERR_ACCOUNT_SERVICE_AMOUNT_NOT_VALID);
     }
   }
 }
